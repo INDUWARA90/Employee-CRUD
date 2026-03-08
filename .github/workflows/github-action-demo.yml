@@ -1,0 +1,38 @@
+name: Express Backend CI
+
+on:
+  push:
+    branches: [ main ]
+
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Linter
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Start Server Test
+        run: |
+          node src/app.js &
+          sleep 5
+          curl http://localhost:3000
